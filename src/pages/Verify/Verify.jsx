@@ -11,34 +11,62 @@ const Verify = () => {
     const { url } = useContext(StoreContext);
     const navigate = useNavigate();
 
-    const verifyPayment = async () => {
+    const verifyPayment = async (token) => {
         try {
-            console.log("Verifying payment with success:", success, "orderId:", orderId); // Debug log
-
-            const response = await Axios.post(url + "/api/order/verify", { success, orderId }, {
-                headers: {
-                    token: localStorage.getItem("token") // Assuming you're storing the token in localStorage
+            console.log("Backend URL:", url);
+            const response = await Axios.post(
+                url + "/api/order/verify",
+                { success, orderId },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        token: token,
+                    },
                 }
-            });
-            console.log("API Response:", response.data); // Debug log for API response
-
+            );
+    
+            console.log("API Response:", response.data);
+            console.log("Token being sent:", token);
             if (response.data.success) {
                 navigate("/myorders");
             } else {
-                console.log("Error:", response.data.message || "Unknown error");
-                // You can navigate to an error page or display a message
-                // navigate("/"); 
+                alert("Payment verification failed. " + (response.data.message || ""));
+                navigate("/");
             }
         } catch (error) {
-            console.error("Payment verification failed:", error);
-            navigate("/"); // Navigate to a safe fallback if there's an error.
+            console.error("Error verifying payment:", error);
+            alert("Something went wrong during payment verification.");
+            navigate("/");
         }
     };
-
+    
+    
     useEffect(() => {
-        verifyPayment();
-    }, [success, orderId]);
-
+        const tokenFromURL = searchParams.get("token");
+        const tokenFromStorage = localStorage.getItem("token");
+    
+        // ✅ ADD THESE 3 LINES:
+        console.log("✅ Token from URL:", tokenFromURL);
+        console.log("✅ Token from localStorage:", tokenFromStorage);
+        console.log("✅ Final token used:", tokenFromURL || tokenFromStorage);
+    
+        if (tokenFromURL && !tokenFromStorage) {
+            localStorage.setItem("token", tokenFromURL);
+        }
+    
+        const token = tokenFromURL || tokenFromStorage;
+    
+        if (!token) {
+            console.warn("No token found. Redirecting to login...");
+            alert("Session expired. Please login again.");
+            navigate("/login");
+            return;
+        }
+    
+        verifyPayment(token); // ✅ Pass token
+    }, []);
+    
+    
     return (
         <div className='verify'>
             <div className="spinner"></div>
