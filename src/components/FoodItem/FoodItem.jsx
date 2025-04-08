@@ -4,6 +4,7 @@ import { assets } from '../../assets/frontend_assets/assets';
 import { StoreContext } from '../../Context/StoreContext';
 import { toast } from 'react-toastify'; // ✅ Import toast
 
+
 const FoodItem = ({ id, name, price, description, image }) => {
   const { cartItems, addToCart, removeFromCart, url } = useContext(StoreContext);
 
@@ -21,13 +22,13 @@ const FoodItem = ({ id, name, price, description, image }) => {
             }}
             src={assets.add_icon_white}
             alt=""
-          />
-        ) : (
-          <div className='food-item-counter'>
+            />
+          ) : (
+            <div className='food-item-counter'>
             <img
               onClick={() => {
                 removeFromCart(id);
-                toast.error(`${name} removed from cart`);
+                toast.success(`${name} removed from cart`);
               }}
               src={assets.remove_icon_red}
               alt=""
