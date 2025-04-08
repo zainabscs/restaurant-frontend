@@ -25,7 +25,7 @@ const Cart = () => {
             return (
               <div>
                 <div className='cart-items-title cart-items-item'>
-                  <img src={url+"/images/"+item.image} alt="" />
+                  <img src={item.image} alt={item.name} />
                   <p>{item.name}</p>
                   <p>${item.price}</p>
                   <p>{cartItems[item._id]}</p>
@@ -58,15 +58,6 @@ const Cart = () => {
             </div>
           </div>
           <button onClick={()=>navigate('/order')}>PROCEED TO CHECKOUT</button>
-        </div>
-        <div className="cart-promocode">
-          <div>
-            <p>If you have a promo code,Enter it here</p>
-            <div className="cart-promocode-input">
-              <input type="text" placeholder='promo code' />
-              <button>Submit</button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
