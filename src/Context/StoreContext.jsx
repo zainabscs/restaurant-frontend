@@ -5,7 +5,7 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
     const [cartItems, setCartItems] = useState({});
-    const url="https://restaurant-b-po5r.vercel.app";
+    const url="https://restaurant-b-3j27.vercel.app/";
     const [token,setToken]=useState("");
     const [food_list,setFoodList]=useState([]);
     const addToCart = async (itemId) => {
@@ -45,10 +45,15 @@ const StoreContextProvider = (props) => {
         setFoodList(response.data.data);
     }
 
-    const loadCartData=async (token)=>{
-        const response=await axios.post(url+"/api/cart/get",{},{headers:{token}});
-        setCartItems(response.data.cartData);
-    }
+    const loadCartData = async (token) => {
+        const response = await axios.post(url + "/api/cart/get", {}, { headers: { token } });
+        if (response.data.success && response.data.cartData) {
+          setCartItems(response.data.cartData);
+        } else {
+          setCartItems({}); // fallback to empty cart if nothing received
+        }
+      };
+      
     useEffect(()=>{
         async function loadData() {
             await fetchFoosList();
